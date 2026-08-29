@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nexus Digital WhatsApp Web Outreach</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css?v=2.6">
+</head>
+
+<body class="whatsapp-theme">
+  <div id="app-container">
+
+    <!-- USER AUTHENTICATION / LOGIN SCREEN -->
+    <div id="auth-login-view" class="login-screen-wrapper">
+      <div class="login-card-box">
+        <div class="login-brand-header">
+          <div class="login-brand-icon"><i class="fa-brands fa-whatsapp"></i></div>
+          <h2>Nexus Digital Outreach</h2>
+          <p>Sign in with your Mobile Number (User ID) and Password</p>
+        </div>
+        <form id="login-form" class="login-form">
+          <div class="form-group">
+            <label for="login-id-input"><i class="fa-solid fa-user"></i> Mobile Number / User ID</label>
+            <input type="text" id="login-id-input" class="form-control" placeholder="Enter Mobile Number or User ID" required autocomplete="username">
+          </div>
+          <div class="form-group">
+            <label for="login-password-input"><i class="fa-solid fa-lock"></i> Password</label>
+            <input type="password" id="login-password-input" class="form-control" placeholder="Enter password" required autocomplete="current-password">
+          </div>
+          <button type="submit" id="login-submit-btn" class="btn btn-emerald btn-block">
+            <span>Sign In to Workspace</span> <i class="fa-solid fa-arrow-right"></i>
+          </button>
+          <div id="login-error-msg" class="login-error-alert hidden"></div>
+        </form>
+      </div>
+    </div>
+
+    <!-- WHATSAPP LINKING SCREEN (QR CODE & PAIRING CODE FOR ADMIN) -->
+    <div id="login-view" class="login-container hidden">
+      <div class="whatsapp-header-banner">
+        <div class="logo-brand">
+          <i class="fa-brands fa-whatsapp wa-brand-icon"></i>
+          <span>WHATSAPP WEB PAIRING - NEXUS DIGITAL</span>
+        </div>
+      </div>
+
+      <div class="login-card-wrapper">
+        <div class="login-card">
+          <div class="login-instructions">
+            <h2>Link WhatsApp Business Account</h2>
+            <ol class="steps-list">
+              <li>Open WhatsApp on your phone</li>
+              <li>Tap <strong>Menu <i class="fa-solid fa-ellipsis-vertical"></i></strong> or <strong>Settings <i class="fa-solid fa-gear"></i></strong> and select <strong>Linked Devices</strong></li>
+              <li>Tap on <strong>Link a Device</strong></li>
+              <li>Point your phone to this screen to capture the QR code or link with phone number</li>
+            </ol>
+
+            <div class="linking-tabs">
+              <button type="button" class="linking-tab-btn active" id="btn-tab-qr">
+                <i class="fa-solid fa-qrcode"></i> Scan QR Code
+              </button>
+              <button type="button" class="linking-tab-btn" id="btn-tab-pairing">
+                <i class="fa-solid fa-mobile-screen-button"></i> Link with Phone Number
+              </button>
+            </div>
+
+            <div id="pairing-form-container" class="pairing-form-box hidden">
+              <div class="form-group">
+                <label for="pairing-phone-input">Phone Number with Country Code</label>
+                <div class="phone-input-row">
+                  <input type="text" id="pairing-phone-input" placeholder="e.g. 919876543210 (Without + or spaces)" autocomplete="off">
+                  <button type="button" id="get-pairing-code-btn" class="btn btn-emerald">
+                    Get Code <i class="fa-solid fa-arrow-right"></i>
+                  </button>
+                </div>
+                <span class="hint-text">Include country code (e.g. 91 for India).</span>
+              </div>
+
+              <div id="pairing-code-display-card" class="pairing-code-card hidden">
+                <span class="pairing-label">Your 8-Digit Pairing Code:</span>
+                <div class="code-box" id="pairing-code-value">---- ----</div>
+                <p class="pairing-subtext">Open WhatsApp &gt; Linked Devices &gt; Link with phone number instead &gt; Enter code above.</p>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="qr-code-section" id="qr-section">
+            <div class="qr-code-wrapper" id="qr-box">
+              <div class="qr-loading-placeholder" id="qr-placeholder">
+                <i class="fa-solid fa-spinner fa-spin qr-spinner"></i>
+                <p>Generating QR Code...</p>
+              </div>
+              <img id="qr-image" class="qr-img hidden" alt="WhatsApp QR Code">
+            </div>
+            <div class="qr-status-footer" id="qr-status-text">
+              Status: Connecting Baileys engine...
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- MAIN WHATSAPP WEB CHAT APP VIEW -->
+    <div id="chat-view" class="chat-app-container hidden">
+
+      <!-- LEFT SIDEBAR: CHATS LIST & PROFILE -->
+      <aside class="chat-sidebar">
+
+        <!-- SIDEBAR TOP HEADER -->
+        <header class="sidebar-header">
+          <div class="user-avatar-btn" id="user-profile-avatar" title="Logged in Profile">
+            NA
+          </div>
+          <div class="connected-user-info" id="user-profile-info">
+            <div class="user-name-role-row">
+              <span class="user-name" id="user-profile-name">Nexus Admin</span>
+              <span class="user-role-badge admin" id="user-profile-badge">ADMIN</span>
+            </div>
+            <span class="user-status-dot online"><i class="fa-solid fa-circle"></i> <span id="wa-connection-text">WhatsApp Online</span></span>
+          </div>
+          <div class="header-actions">
+            <button type="button" class="icon-btn highlight-admin-btn hidden" id="toggle-admin-drawer-btn" title="Admin Control Panel">
+              <i class="fa-solid fa-gear"></i>
+            </button>
+            <button type="button" class="icon-btn" id="new-chat-btn" title="Start New Chat">
+              <i class="fa-solid fa-message"></i>
+            </button>
+            <button type="button" class="icon-btn" id="user-logout-btn" title="Sign Out">
+              <i class="fa-solid fa-arrow-right-from-bracket"></i>
+            </button>
+          </div>
+        </header>
+
+        <!-- SIDEBAR TABS -->
+        <div class="sidebar-nav-tabs">
+          <button type="button" class="sidebar-tab-btn active" id="tab-chats">
+            <i class="fa-solid fa-comments"></i>
+            <span>My Chats</span>
+            <span class="tab-badge" id="chats-count-badge">0</span>
+          </button>
+          <button type="button" class="sidebar-tab-btn" id="tab-contacts">
+            <i class="fa-solid fa-address-book"></i>
+            <span>Contacts</span>
+            <i class="fa-solid fa-lock tab-lock-icon" id="contacts-tab-lock-icon"></i>
+          </button>
+        </div>
+
+        <!-- SEARCH BAR -->
+        <div class="search-container">
+          <div class="search-input-wrapper">
+            <i class="fa-solid fa-magnifying-glass search-icon"></i>
+            <input type="text" id="chat-search-input" placeholder="Search by phone number...">
+          </div>
+        </div>
+
+        <!-- RECENT ACTIVE CONVERSATIONS LIST -->
+        <div class="chat-list" id="chats-list-container">
+          <div class="empty-chats-placeholder">
+            <i class="fa-solid fa-comment-dots"></i>
+            <p>No active chats yet</p>
+            <span>Click the message icon above to start a conversation.</span>
+          </div>
+        </div>
+
+        <!-- PROTECTED CONTACTS DIRECTORY VIEW -->
+        <div class="contacts-directory-wrapper hidden" id="contacts-directory-wrapper">
+          
+          <!-- LOCKED VIEW -->
+          <div class="contacts-locked-card" id="contacts-locked-card">
+            <div class="lock-shield-icon">
+              <i class="fa-solid fa-shield-halved"></i>
+            </div>
+            <h4>Contacts Directory Locked</h4>
+            <p>Enter security PIN to view the outreach contacts list.</p>
+            <div class="pin-form-group">
+              <input type="password" id="contacts-pin-input" class="pin-input" placeholder="Enter PIN / Password" autocomplete="off">
+              <button type="button" id="unlock-contacts-btn" class="btn btn-emerald btn-block">
+                <span>Unlock Directory</span> <i class="fa-solid fa-unlock"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- UNLOCKED DIRECTORY VIEW -->
+          <div class="contacts-unlocked-card hidden" id="contacts-unlocked-card">
+            <div class="contacts-stats-bar">
+              <span class="contacts-count-label" id="contacts-total-count">0 Contacts</span>
+              <div class="contacts-bar-actions">
+                <button type="button" class="mini-text-btn" id="change-contacts-pwd-btn" title="Change Security PIN">
+                  <i class="fa-solid fa-key"></i> PIN
+                </button>
+                <button type="button" class="mini-text-btn" id="relock-contacts-btn" title="Lock Section">
+                  <i class="fa-solid fa-lock"></i> Lock
+                </button>
+              </div>
+            </div>
+            <div class="contacts-list" id="contacts-list-container">
+              <!-- Contacts directory rendered dynamically here -->
+            </div>
+          </div>
+
+        </div>
+
+      </aside>
+
+      <!-- MAIN RIGHT CHAT AREA -->
+      <main class="chat-main-area" id="chat-main-area">
+
+        <!-- EMPTY STATE (NO CHAT SELECTED) -->
+        <div class="chat-placeholder-state" id="chat-empty-state">
+          <div class="whatsapp-illustration">
+            <i class="fa-brands fa-whatsapp big-wa-logo"></i>
+          </div>
+          <h2>Nexus Digital Outreach Portal</h2>
+          <p>Send messages, outreach telecaller responses, and track candidate communications in real time.</p>
+          <div class="e2e-badge"><i class="fa-solid fa-lock"></i> Centralized WhatsApp Session Enabled</div>
+        </div>
+
+        <!-- ACTIVE CHAT CONVERSATION VIEW -->
+        <div class="active-chat-wrapper hidden" id="active-chat-wrapper">
+
+          <!-- CHAT HEADER -->
+          <header class="active-chat-header">
+            <div class="chat-contact-info">
+              <div class="contact-avatar" id="active-chat-avatar">00</div>
+              <div class="contact-details">
+                <div class="active-chat-title-row">
+                  <h3 id="active-chat-title">+91 98765 43210</h3>
+                  <span class="owner-pill hidden" id="active-chat-owner-badge">Assigned: Admin</span>
+                </div>
+                <span class="contact-subtext" id="active-chat-subtitle">+91 98765 43210</span>
+              </div>
+            </div>
+            <div class="header-actions">
+              <button type="button" class="icon-btn" id="link-phone-btn" title="Link Original Phone Number"><i
+                  class="fa-solid fa-phone"></i></button>
+              <button type="button" class="icon-btn" id="search-in-chat-btn" title="Search"><i
+                  class="fa-solid fa-magnifying-glass"></i></button>
+              <button type="button" class="icon-btn" title="More options"><i
+                  class="fa-solid fa-ellipsis-vertical"></i></button>
+            </div>
+          </header>
+
+          <!-- MESSAGES BODY (SCROLLABLE) -->
+          <div class="chat-messages-container" id="chat-messages-container">
+            <!-- Speech bubbles render dynamically here -->
+          </div>
+
+          <!-- BOTTOM MESSAGE COMPOSER BAR -->
+          <footer class="chat-composer-footer">
+            <button type="button" class="icon-btn" id="emoji-btn" title="Emoji">
+              <i class="fa-regular fa-face-smile"></i>
+            </button>
+            
+            <label for="attachment-input" class="icon-btn file-attach-btn" title="Attach file or media">
+              <i class="fa-solid fa-paperclip"></i>
+            </label>
+            <input type="file" id="attachment-input" class="hidden" accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.xlsx,.txt">
+
+            <div class="composer-input-wrapper">
+              <div id="attachment-preview-tag" class="attachment-preview-tag hidden">
+                <span id="attachment-name">file.png</span>
+                <i class="fa-solid fa-xmark remove-attachment-icon" id="remove-attachment-btn"></i>
+              </div>
+              <textarea id="message-text-input" rows="1" placeholder="Type a message..." autocomplete="off"></textarea>
+            </div>
+
+            <button type="button" class="send-btn" id="send-msg-btn" title="Send message">
+              <i class="fa-solid fa-paper-plane"></i>
+            </button>
+          </footer>
+
+        </div>
+
+      </main>
+
+    </div>
+
+    <!-- ADMIN RIGHT-SIDE CONTROL PANEL (DRAWER) -->
+    <div id="admin-drawer-backdrop" class="drawer-backdrop hidden"></div>
+    <aside id="admin-drawer-panel" class="admin-drawer-container hidden">
+      <div class="admin-drawer-header">
+        <div class="drawer-title">
+          <i class="fa-solid fa-shield-halved color-emerald"></i>
+          <h3>Admin Control Panel</h3>
+        </div>
+        <button type="button" id="close-admin-drawer-btn" class="icon-btn-close"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <!-- DRAWER NAV TABS -->
+      <div class="drawer-nav-tabs">
+        <button type="button" class="drawer-tab-btn active" id="drawer-tab-emp">
+          <i class="fa-solid fa-users"></i> Employees
+        </button>
+        <button type="button" class="drawer-tab-btn" id="drawer-tab-contacts">
+          <i class="fa-solid fa-address-book"></i> Master Contacts
+        </button>
+        <button type="button" class="drawer-tab-btn" id="drawer-tab-wa">
+          <i class="fa-brands fa-whatsapp"></i> WhatsApp Engine
+        </button>
+      </div>
+
+      <div class="drawer-content-body">
+        
+        <!-- SECTION 1: EMPLOYEE REGISTRATION & MANAGEMENT -->
+        <div id="drawer-sec-emp" class="drawer-section">
+          
+          <!-- REGISTRATION CARD -->
+          <div class="admin-card">
+            <h4><i class="fa-solid fa-user-plus color-emerald"></i> Register New Employee</h4>
+            <p class="admin-card-desc">Create a login account for your staff member using their Mobile Number as User ID.</p>
+            <form id="emp-register-form" class="admin-form">
+              <div class="form-group">
+                <label for="emp-reg-name">Employee Full Name</label>
+                <input type="text" id="emp-reg-name" class="form-control" placeholder="e.g. Rahul Sharma" required>
+              </div>
+              <div class="form-group">
+                <label for="emp-reg-phone">Mobile Number (User ID)</label>
+                <div class="phone-country-input-group">
+                  <select id="emp-reg-country" class="country-code-select">
+                    <option value="91" selected>🇮🇳 +91 (IND)</option>
+                    <option value="1">🇺🇸 +1 (USA)</option>
+                    <option value="44">🇬🇧 +44 (UK)</option>
+                    <option value="971">🇦🇪 +971 (UAE)</option>
+                    <option value="custom">🌐 + (Other)</option>
+                  </select>
+                  <input type="text" id="emp-reg-phone" class="form-control" placeholder="e.g. 9876543210" required>
+                </div>
+                <span class="hint-text">Employee will use this mobile number to log in.</span>
+              </div>
+              <div class="form-group">
+                <label for="emp-reg-password">Password</label>
+                <input type="password" id="emp-reg-password" class="form-control" placeholder="Create password (min 3 chars)" required>
+              </div>
+              <button type="submit" id="emp-reg-submit-btn" class="btn btn-emerald btn-block">
+                <span>Register Employee</span> <i class="fa-solid fa-check"></i>
+              </button>
+            </form>
+          </div>
+
+          <!-- REGISTERED EMPLOYEES LIST -->
+          <div class="admin-card" style="margin-top: 16px;">
+            <div class="admin-card-header-flex">
+              <h4><i class="fa-solid fa-users-gear color-emerald"></i> Registered Employees</h4>
+              <span class="badge" id="emp-total-count">0</span>
+            </div>
+            <div class="employee-list-container" id="employee-list-container">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+
+        </div>
+
+        <!-- SECTION 2: MASTER CONTACTS DIRECTORY -->
+        <div id="drawer-sec-contacts" class="drawer-section hidden">
+          <div class="admin-card">
+            <div class="admin-card-header-flex">
+              <h4><i class="fa-solid fa-address-book color-emerald"></i> Master Outreach Contacts</h4>
+              <span class="badge" id="drawer-contacts-count">0</span>
+            </div>
+            <p class="admin-card-desc">All candidate phone numbers synced in database.</p>
+            <div class="search-input-wrapper" style="margin-bottom: 12px;">
+              <i class="fa-solid fa-magnifying-glass search-icon"></i>
+              <input type="text" id="drawer-contact-search" placeholder="Search number...">
+            </div>
+            <div class="drawer-contacts-list" id="drawer-contacts-list">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION 3: WHATSAPP ENGINE & PAIRING -->
+        <div id="drawer-sec-wa" class="drawer-section hidden">
+          <div class="admin-card">
+            <h4><i class="fa-brands fa-whatsapp color-emerald"></i> WhatsApp Engine Status</h4>
+            <div class="wa-status-box" id="drawer-wa-status-box">
+              <span class="status-indicator-dot online"></span>
+              <span id="drawer-wa-status-text">Connected</span>
+            </div>
+            <button type="button" id="drawer-relink-wa-btn" class="btn btn-secondary btn-block" style="margin-top: 12px;">
+              <i class="fa-solid fa-qrcode"></i> Re-Link / Scan QR Code
+            </button>
+            <button type="button" id="drawer-logout-wa-btn" class="btn btn-danger btn-block" style="margin-top: 8px;">
+              <i class="fa-solid fa-power-off"></i> Disconnect WhatsApp Session
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </aside>
+
+    <!-- NEW CHAT MODAL -->
+    <div id="new-chat-modal" class="modal-overlay hidden">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3><i class="fa-solid fa-message color-emerald"></i> Start New Chat</h3>
+          <button type="button" id="close-new-chat-modal" class="icon-btn-close"><i
+              class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="new-chat-phone">WhatsApp Phone Number</label>
+            <div class="phone-country-input-group">
+              <select id="new-chat-country" class="country-code-select">
+                <option value="91" selected>🇮🇳 +91 (IND)</option>
+                <option value="1">🇺🇸 +1 (USA/CAN)</option>
+                <option value="44">🇬🇧 +44 (UK)</option>
+                <option value="971">🇦🇪 +971 (UAE)</option>
+                <option value="966">🇸🇦 +966 (KSA)</option>
+                <option value="880">🇧🇩 +880 (BD)</option>
+                <option value="92">🇵🇰 +92 (PAK)</option>
+                <option value="977">🇳🇵 +977 (NEP)</option>
+                <option value="65">🇸🇬 +65 (SGP)</option>
+                <option value="60">🇲🇾 +60 (MYS)</option>
+                <option value="61">🇦🇺 +61 (AUS)</option>
+                <option value="49">🇩🇪 +49 (DEU)</option>
+                <option value="33">🇫🇷 +33 (FRA)</option>
+                <option value="custom">🌐 + (Other)</option>
+              </select>
+              <input type="text" id="new-chat-phone" class="form-control"
+                placeholder="e.g. 98765 43210" autocomplete="off">
+            </div>
+            <span class="hint-text">Select country code or enter candidate number.</span>
+          </div>
+          <div class="form-group">
+            <label for="new-chat-message">Initial Message (Optional)</label>
+            <textarea id="new-chat-message" rows="3" class="form-control"
+              placeholder="Hello! Greetings from Nexus Digital..."></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" id="start-chat-submit-btn" class="btn btn-emerald btn-block">
+            <span>Start Conversation</span> <i class="fa-solid fa-paper-plane"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- LINK PHONE MODAL -->
+    <div id="link-phone-modal" class="modal-overlay hidden">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3><i class="fa-solid fa-phone color-emerald"></i> Link Original Phone Number</h3>
+          <button type="button" id="close-link-phone-modal" class="icon-btn-close"><i
+              class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="modal-body">
+          <p class="modal-desc" style="color: var(--wa-text-muted); font-size: 13px; margin-bottom: 16px;">
+            Enter the candidate's original mobile number to replace the internal WhatsApp LID and convert this chat to the real phone number.
+          </p>
+          <div class="form-group">
+            <label for="link-phone-input">Candidate Phone Number</label>
+            <div class="phone-country-input-group">
+              <select id="link-phone-country" class="country-code-select">
+                <option value="91" selected>🇮🇳 +91 (IND)</option>
+                <option value="1">🇺🇸 +1 (USA)</option>
+                <option value="44">🇬🇧 +44 (UK)</option>
+                <option value="971">🇦🇪 +971 (UAE)</option>
+                <option value="966">🇸🇦 +966 (KSA)</option>
+                <option value="880">🇧🇩 +880 (BD)</option>
+                <option value="92">🇵🇰 +92 (PAK)</option>
+                <option value="977">🇳🇵 +977 (NEP)</option>
+                <option value="65">🇸🇬 +65 (SGP)</option>
+                <option value="custom">🌐 + (Other)</option>
+              </select>
+              <input type="text" id="link-phone-input" class="form-control"
+                placeholder="e.g. 98765 43210" autocomplete="off">
+            </div>
+            <span class="hint-text">Select country code or enter candidate number.</span>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" id="submit-link-phone-btn" class="btn btn-emerald btn-block">
+            <span>Verify & Link Phone Number</span> <i class="fa-solid fa-link"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- CHANGE CONTACTS PASSWORD MODAL -->
+    <div id="change-pwd-modal" class="modal-overlay hidden">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3><i class="fa-solid fa-key color-emerald"></i> Change Contacts Security PIN</h3>
+          <button type="button" id="close-change-pwd-modal" class="icon-btn-close"><i
+              class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="current-pin-input">Current PIN / Password</label>
+            <input type="password" id="current-pin-input" class="form-control"
+              placeholder="Enter current PIN" autocomplete="off">
+          </div>
+          <div class="form-group">
+            <label for="new-pin-input">New PIN / Password</label>
+            <input type="password" id="new-pin-input" class="form-control"
+              placeholder="Enter new PIN / Password (min 3 chars)" autocomplete="off">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" id="submit-change-pwd-btn" class="btn btn-emerald btn-block">
+            <span>Update Password</span> <i class="fa-solid fa-check"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="app.js?v=2.6"></script>
+</body>
+
+</html>

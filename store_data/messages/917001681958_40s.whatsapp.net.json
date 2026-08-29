@@ -1,0 +1,79 @@
+[
+  {
+    "id": "3EB0CFE9F7390C845B002D",
+    "jid": "917001681958@s.whatsapp.net",
+    "fromMe": true,
+    "text": "hi",
+    "mediaUrl": null,
+    "mediaType": null,
+    "fileName": null,
+    "timestamp": 1787983538000,
+    "status": "1"
+  },
+  {
+    "id": "3EB0DD421D9EEE33FB11D1",
+    "jid": "917001681958@s.whatsapp.net",
+    "fromMe": true,
+    "text": "",
+    "mediaUrl": "/uploads/file_1787983883840_142648610.jpg",
+    "mediaType": "image",
+    "fileName": null,
+    "timestamp": 1787983881000,
+    "status": "1"
+  },
+  {
+    "id": "3EB04CFE8C90F29C271031",
+    "jid": "917001681958@s.whatsapp.net",
+    "fromMe": true,
+    "text": "holi",
+    "mediaUrl": null,
+    "mediaType": null,
+    "fileName": null,
+    "timestamp": 1787991934000,
+    "status": "1"
+  },
+  {
+    "id": "3EB07C7C6E9E0E0A2025EF",
+    "jid": "917001681958@s.whatsapp.net",
+    "fromMe": true,
+    "text": "",
+    "mediaUrl": "/uploads/file_1787991964456_685773106.jpg",
+    "mediaType": "image",
+    "fileName": null,
+    "timestamp": 1787991962000,
+    "status": "1"
+  },
+  {
+    "id": "3EB00ED05E88B7E4A4348D",
+    "jid": "917001681958@s.whatsapp.net",
+    "fromMe": true,
+    "text": "holu",
+    "mediaUrl": null,
+    "mediaType": null,
+    "fileName": null,
+    "timestamp": 1787992019000,
+    "status": "read"
+  },
+  {
+    "id": "AC03B72F6B5247F680E6E2FCF25DD0D8",
+    "jid": "917001681958@s.whatsapp.net",
+    "fromMe": false,
+    "text": "Um",
+    "mediaUrl": null,
+    "mediaType": null,
+    "fileName": null,
+    "timestamp": 1787993945000,
+    "status": "read"
+  },
+  {
+    "id": "3EB018FBA8CB8FE560089D",
+    "jid": "917001681958@s.whatsapp.net",
+    "fromMe": true,
+    "text": "hii",
+    "mediaUrl": null,
+    "mediaType": null,
+    "fileName": null,
+    "timestamp": 1787994612000,
+    "status": "sent"
+  }
+]
