@@ -1151,15 +1151,21 @@ async function initWhatsApp(requestedPhone = null) {
       }
     });
 
-    if (requestedPhone && !waSock.authState.creds.registered) {
-      const cleanPhone = String(requestedPhone).replace(/\D/g, '');
-      if (cleanPhone) {
-        setTimeout(async () => {
+    waSock.ev.on('connection.update', async (update) => {
+      const { connection, lastDisconnect, qr } = update;
+
+      if (qr) {
+        const cleanPhone = requestedPhone ? String(requestedPhone).replace(/\D/g, '') : null;
+
+        if (cleanPhone && !waSock.authState?.creds?.registered) {
+          waConnectionStatus = 'pairing_ready';
           try {
             const rawCode = await waSock.requestPairingCode(cleanPhone);
             const formattedCode = rawCode?.match(/.{1,4}/g)?.join('-') || rawCode;
             pairingCode = formattedCode;
+            qrCodeDataUrl = null;
 
+            console.log('⚡ Pairing Code Generated Successfully:', formattedCode);
             io.emit('whatsapp:status', {
               status: 'pairing_ready',
               qr: null,
@@ -1167,25 +1173,19 @@ async function initWhatsApp(requestedPhone = null) {
               user: null
             });
           } catch (pErr) {
-            console.error('Error requesting pairing code:', pErr);
+            console.error('Error requesting pairing code on socket ready:', pErr.message || pErr);
           }
-        }, 3000);
-      }
-    }
-
-    waSock.ev.on('connection.update', async (update) => {
-      const { connection, lastDisconnect, qr } = update;
-
-      if (qr && !requestedPhone) {
-        waConnectionStatus = 'qr_ready';
-        qrCodeDataUrl = await qrcode.toDataURL(qr);
-        console.log('⚡ QR Code Generated Successfully.');
-        io.emit('whatsapp:status', {
-          status: waConnectionStatus,
-          qr: qrCodeDataUrl,
-          pairingCode: null,
-          user: null
-        });
+        } else {
+          waConnectionStatus = 'qr_ready';
+          qrCodeDataUrl = await qrcode.toDataURL(qr);
+          console.log('⚡ QR Code Generated Successfully.');
+          io.emit('whatsapp:status', {
+            status: waConnectionStatus,
+            qr: qrCodeDataUrl,
+            pairingCode: null,
+            user: null
+          });
+        }
       }
 
       if (connection === 'open') {
