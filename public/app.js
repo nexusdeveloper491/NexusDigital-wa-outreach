@@ -209,6 +209,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  const userProfileInfo = document.getElementById('user-profile-info');
+  if (userProfileInfo) {
+    userProfileInfo.style.cursor = 'pointer';
+    userProfileInfo.addEventListener('click', () => {
+      if (currentUser?.role === 'admin' && waConnectionStatus !== 'connected') {
+        if (toggleAdminDrawerBtn) toggleAdminDrawerBtn.click();
+        if (drawerTabWa) drawerTabWa.click();
+      }
+    });
+  }
+
   // Fetch initial WhatsApp status
   fetch('/api/status').then(r => r.json()).then(data => {
     updateStatusUI(data);
