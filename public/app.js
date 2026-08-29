@@ -313,6 +313,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   function updateStatusUI(data) {
+    if (!data) return;
     waConnectionStatus = data.status || 'disconnected';
 
     if (waConnectionText) {
@@ -327,13 +328,24 @@ document.addEventListener('DOMContentLoaded', () => {
         loginView.classList.add('hidden');
         chatView.classList.remove('hidden');
       }
-    } else if (waConnectionStatus === 'connecting') {
+    } else {
       if (data.qr) {
         qrImage.src = data.qr;
         qrImage.classList.remove('hidden');
         qrPlaceholder.classList.add('hidden');
         qrStatusText.textContent = 'Scan QR code with your phone';
+      } else {
+        qrImage.classList.add('hidden');
+        qrPlaceholder.classList.remove('hidden');
+        if (waConnectionStatus === 'connecting') {
+          qrStatusText.textContent = 'Status: Connecting Baileys engine...';
+        } else if (waConnectionStatus === 'disconnected') {
+          qrStatusText.textContent = 'Status: WhatsApp Disconnected';
+        } else if (waConnectionStatus === 'qr_ready') {
+          qrStatusText.textContent = 'Status: Generating QR Code...';
+        }
       }
+
       if (data.pairingCode) {
         pairingCodeValue.textContent = data.pairingCode;
         pairingCodeDisplayCard.classList.remove('hidden');
@@ -1182,10 +1194,19 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   if (drawerRelinkWaBtn) {
-    drawerRelinkWaBtn.addEventListener('click', () => {
+    drawerRelinkWaBtn.addEventListener('click', async () => {
       closeAdminDrawer();
       loginView.classList.remove('hidden');
       chatView.classList.add('hidden');
+      qrImage.classList.add('hidden');
+      qrPlaceholder.classList.remove('hidden');
+      qrStatusText.textContent = 'Status: Resetting session and generating QR code...';
+
+      try {
+        await authFetch('/api/relink', { method: 'POST' });
+      } catch (e) {
+        console.error('Relink error:', e);
+      }
     });
   }
 

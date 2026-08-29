@@ -1338,6 +1338,37 @@ app.post('/api/logout', authMiddleware, requireAdmin, async (req, res) => {
   }
 });
 
+app.post('/api/relink', authMiddleware, requireAdmin, async (req, res) => {
+  try {
+    isExplicitLogout = true;
+    if (waSock) {
+      try {
+        await waSock.logout();
+      } catch (err) {
+        try { waSock.end(); } catch (e) {}
+      }
+    }
+
+    clearSessionFolderSync();
+
+    waConnectionStatus = 'connecting';
+    waUserInfo = null;
+    qrCodeDataUrl = null;
+    pairingCode = null;
+    isInitializing = false;
+
+    io.emit('whatsapp:status', { status: waConnectionStatus, qr: null, pairingCode: null, user: null });
+
+    setTimeout(() => {
+      initWhatsApp().catch(err => console.error('Relink init error:', err));
+    }, 1000);
+
+    return res.json({ success: true, message: 'WhatsApp session reset. Generating fresh QR code...' });
+  } catch (err) {
+    return res.status(500).json({ success: false, message: err.message });
+  }
+});
+
 // --- USER AUTHENTICATION & EMPLOYEE MANAGEMENT ---
 
 // Login Endpoint (Supports mobile number or username with rate limiting)
